@@ -4,11 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Commentaire {
 
     @Id
@@ -20,4 +16,8 @@ public class Commentaire {
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")  // ✅ ajouter
+    private User user;
 }

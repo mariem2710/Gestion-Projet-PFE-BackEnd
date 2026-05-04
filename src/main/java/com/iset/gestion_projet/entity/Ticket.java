@@ -28,17 +28,33 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private Priorite priorite;
 
-    private LocalDate dateCreation;
-
+    private LocalDate dateCreation;   // ← auto à la création
     private LocalDate dateSouhaite;
+    private LocalDate dateMiseAJour;  // ← auto à chaque update
 
-    private LocalDate dateMiseAJour;
-
-    // 1 Ticket → plusieurs commentaires
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Commentaire> commentaires;
 
-    // 1 Ticket → plusieurs sous-tickets
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SousTicket> sousTickets;
+
+    // ─────────────────────────────────────────────
+    // Appelé automatiquement par JPA avant INSERT
+    // ─────────────────────────────────────────────
+    @PrePersist
+    public void prePersist() {
+        this.dateCreation  = LocalDate.now();
+        this.dateMiseAJour = LocalDate.now();
+        if (this.statut == null) {
+            this.statut = Statut.A_faire;
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // Appelé automatiquement par JPA avant UPDATE
+    // ─────────────────────────────────────────────
+    @PreUpdate
+    public void preUpdate() {
+        this.dateMiseAJour = LocalDate.now();
+    }
 }
